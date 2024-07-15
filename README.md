@@ -1,7 +1,16 @@
-# React + Vite
+# Booking Page  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+This project was created to book consultation sessions for studying abroad at a consultation cabinet.
+
+Technologies used: 
+  - Javascript
+  - React js 
+  - React Prime library
+  - TailwindCss
+  - Axios
+  - i18n language detector (Translation)
+    
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
