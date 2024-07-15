@@ -1,0 +1,9 @@
+
+.p-stepper-number{
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+.p-stepper .p-stepper-header.p-highlight .p-stepper-number {
+    background-color: #0d2252 ;
+    color: #dddee1;
+}
