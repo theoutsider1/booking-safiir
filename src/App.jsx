@@ -14,6 +14,8 @@ import turkeyImage from '/src/assets/logo-circle.png';
 import saudiImage from '/src/assets/logo-circle.png';
 import egyptImage from '/src/assets/logo-circle.png';
 import jordanImage from '/src/assets/logo-circle.png';
+import axios from 'axios';
+
 
 export const countries = [
     {
@@ -44,7 +46,7 @@ function App() {
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
+    
     const [formData, setFormData] = useState({
         country: {} ,
         date: '',
@@ -90,7 +92,35 @@ function App() {
               ...prev,
               userDetails: { ...newFormData },
             };
-            console.log('Form submitted:', updatedFormData);
+            const date = new Date(updatedFormData.date);
+
+            // Function to pad single digits with leading zero
+            const pad = (num) => (num < 10 ? '0' + num : num);
+
+            // Format date as d-m-Y
+            const formattedDate = `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+
+            const dataToSend = {
+                "country_id": updatedFormData.country.id,
+                "date": formattedDate,
+                "time": updatedFormData.time, // Morning time range
+                "name": updatedFormData.userDetails.emailConfirmation,
+                "phone": updatedFormData.userDetails.phone,
+                "email": updatedFormData.userDetails.email,
+                "studies": parseInt(updatedFormData.userDetails.education)
+            };
+
+            const sendData = async () => {
+                try {
+                    const response = await axios.post(`http://127.0.0.1:8000/api/store`, dataToSend);
+                    
+                } catch (error) {
+                    
+                }
+                console.log(response);
+            }
+            sendData()
+            
             return updatedFormData;
           });
     }
@@ -123,6 +153,12 @@ function App() {
   
 
     useEffect(() => {
+        const getCountries = async () => {
+            const response = await axios.get(`http://localhost:8000/api/countries`);
+            console.log(response);
+        }
+
+        getCountries();
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
@@ -162,13 +198,6 @@ function App() {
                                             values={formData}
                                             handleChange={handleChange}/>
                                     </div>
-                                    {/* <div className="flex rtl:flex-row-reverse py-4">
-                                        <button
-                                            onClick={handleNext}
-                                            className='flex items-center space-x-4 rtl:space-x-reverse bg-[#0D2252] hover:bg-[#4b4b4b] text-white text-lg font-semibold px-4 py-2'>
-                                            <span>{t('Next step')}</span>
-                                        </button>
-                                    </div> */}
                                 </StepperPanel>
 
                                 {/* stepper 2  */}
@@ -178,11 +207,6 @@ function App() {
                                         <Calendar handleChange={handleChange} handleNext={handleNext}/>
                                     </div>
                                     <div className="flex py-4 gap-2 flex-row-reverse justify-end">
-                                        {/* <button
-                                            onClick={handleNext}
-                                            className='flex items-center space-x-4 rtl:space-x-reverse bg-[#0D2252] hover:bg-[#4b4b4b] text-white text-lg font-semibold px-4 py-2'>
-                                            <span>{t('Next step')}</span>
-                                        </button> */}
                                         <button
                                             onClick={handlePrev}
                                             className='flex items-center space-x-4 rtl:space-x-reverse bg-[#DA0037] hover:bg-[#4b4b4b] text-white text-lg font-semibold px-4 py-2'>

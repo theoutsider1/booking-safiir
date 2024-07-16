@@ -12,12 +12,12 @@ function CountryCard({ country, onSelectCountry, selected }) {
           {/* onSelectCountry(country)> */}
       <div className="flex flex-col items-center">
         <img 
-          src={country.flag} 
-          alt={`${country.name} flg w-full`}
+          src={`http://127.0.0.1:8000/storage/${country.image}`} 
+          alt={`${country.ar_label} flg w-full`}
           className="w-[120px] rounded-full mb-4" 
         />
         <div className="text-center text-black text-xl font-bold font-tajawal">
-          {country.name}
+          {country.ar_label}
         </div>
       </div>
     </div>

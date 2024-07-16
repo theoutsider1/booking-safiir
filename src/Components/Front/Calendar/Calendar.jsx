@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar as ModernCalendar } from 'primereact/calendar';
 import 'primereact/resources/themes/saga-blue/theme.css'; // Choose a PrimeReact theme
 import 'primereact/resources/primereact.min.css'; // Core CSS
 import TestCalendar from './TestCalendar';
-
+import axios from 'axios';
 function Calendar({handleChange, handleNext}) {
     const defaultValue = {
         year: 2024,
@@ -14,7 +14,17 @@ function Calendar({handleChange, handleNext}) {
     const [selectedDay, setSelectedDay] = useState(defaultValue);
     const [randomTimes, setRandomTimes] = useState([]);
     const [dateState, setDateState] = useState(false)
-
+    const [rangeTimes, setRangeTimes] = useState([])
+    useEffect(() => {
+        const getTimes = async () => {
+            const response = await axios.get(`http://localhost:8000/api/time`)
+            console.log(response.data);
+            setRangeTimes(response.data)
+        }
+        getTimes()
+    }, [])
+    
+    
     const generateTimes = () => {
         const times = [];
         for (let hour = 0; hour < 24; hour++) {
@@ -68,49 +78,27 @@ function Calendar({handleChange, handleNext}) {
                         {/* Time header */}
                             {/* Time choices buttons  */}
                         <div className='mt-1.5 flex flex-col justify-center items-center gap-3 sm:gap-3 w-full'>
-
-                            <button className={`w-3/4 flex flex-col px-1.5 text-[#0d2252]  rounded-full border-[#0d2252] py-2  sm:w-3/4  justify-center items-center  border-2
-                                    ${!dateState ? 'cursor-not-allowed opacity-50' : 'hover:shadow-inner hover:shadow-neutral-200 shadow-md '}`} 
-                                    disabled={!dateState}
-                                   onClick={()=>handleTime('Morning')}> 
-                                    
-                                <div className=''>
-                                    <span className='text-sm sm:px-6 font-bold'>Morning</span>                                    
-                                </div>
-                                <div>
-                                    <span className='text-sm sm:text-sm font-semibold'>8:30 PM</span>
-                                    <i className="pi pi-arrow-right px-1.5 rtl:rotate-180" style={{ fontSize: '1rem' }}></i>
-                                    <span className='sm:px-2 text-sm font-semibold'>12:30 PM</span>   
-                                </div>
-                            </button>
-
-                            <button className={`w-3/4 flex flex-col justify-center items-center border-2 px-1.5 text-[#0d2252] rounded-full border-[#0d2252] py-2 sm:w-3/4
-                                        ${!dateState ? 'cursor-not-allowed opacity-50' : 'hover:shadow-inner hover:shadow-neutral-200 shadow-md'}`}
+                            {rangeTimes.map((rangeTime) => {
+                                return (
+                                    <button 
+                                        className={`w-3/4 flex flex-col px-1.5 text-[#0d2252]  rounded-full border-[#0d2252] py-2  sm:w-3/4  justify-center items-center  border-2
+                                        ${!dateState ? 'cursor-not-allowed opacity-50' : 'hover:shadow-inner hover:shadow-neutral-200 shadow-md '}`} 
                                         disabled={!dateState}
-                                        onClick={()=>handleTime('noon')}
-                                    > 
-                                    <div>
-                                        <span className='text-sm sm:px-6 font-bold'>Noon</span></div>                                    
-                                    <div>
-                                        <span className='text-sm sm:text-sm font-semibold'>8:30 PM</span>
-                                        <i className="pi pi-arrow-right px-1.5 rtl:rotate-180" style={{ fontSize: '1rem' }}></i>
-                                        <span className='sm:px-2 text-sm font-semibold'>12:30 PM</span> 
-                                    </div>  
-                            </button>
-                            <button className={`w-3/4 flex flex-col justify-center items-center mb-4 border-2 px-1.5 text-[#0d2252] rounded-full border-[#0d2252] py-2 sm:w-3/4
-                                    ${!dateState ? 'cursor-not-allowed opacity-50' : 'hover:shadow-inner hover:shadow-neutral-200 shadow-md'}`}
-                                    disabled={!dateState}
-                                    onClick={()=> handleTime('evening')}
-                                    > 
-                                    <div>
-                                        <span className='text-sm sm:px-6 font-bold'>Evening</span>                                    
-                                    </div>
-                                    <div>
-                                        <span className='text-sm sm:text-sm font-semibold'>1:30 PM</span>
-                                        <i className="pi pi-arrow-right px-1.5 rtl:rotate-180" style={{ fontSize: '1rem' }}></i>
-                                        <span className='sm:px-2 text-sm font-semibold'>6:30 PM</span>   
-                                    </div>
-                            </button>
+                                        onClick={()=>handleTime(rangeTime.id)}
+                                    >
+                                        <div className=''>
+                                            <span className='text-sm sm:px-6 font-bold'>{rangeTime.ar_label}</span>                                    
+                                        </div>
+                                        <div>
+                                            <span className='text-sm sm:text-sm font-semibold'>{rangeTime.start_time}</span>
+                                            <i className="pi pi-arrow-right px-1.5 rtl:rotate-180" style={{ fontSize: '1rem' }}></i>
+                                            <span className='sm:px-2 text-sm font-semibold'>{rangeTime.end_time}</span>   
+                                        </div>
+                                    </button>
+                                )
+                            })}
+
+                            
                         </div>
                       
                     

@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CountryCard from './CountryCard';
-
-function Country({ countries, handleNext, values , handleChange }) {
+import axios from 'axios';
+function Country({  handleNext, values , handleChange }) {
     const [selectedCountry, setSelectedCountry] = useState({});
-    
+    const [countries, setCountries] = useState([])
     const onSelectCountry = (country) => {
         setSelectedCountry(country);
         handleChange('country',country); 
         handleNext()
-        console.log('country from', country);
     }
+
+    useEffect(() => {
+        const getCountries = async () => {
+            const response = await axios.get(`http://localhost:8000/api/countries`);
+            console.log(response.data);
+            setCountries(response.data);
+        }
+
+        getCountries();
+    }, [])
 
     return (
         <div className="shadow-xl bg-[#f5f7fa] py-10">
